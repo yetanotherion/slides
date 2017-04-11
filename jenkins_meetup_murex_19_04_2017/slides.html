@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Continuous Delivery of a (Continuous Integration) library into Jenkins</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Continuous Delivery of a (Continuous Integration) library into Jenkins
+
+---
+
+# Agenda
+
+1. Jenkins @ Criteo
+
+2. Continuous Delivery of jobs
+
+3. The need of a library for jobs
+
+4. Continous Delivery of the library
+
+5. Enabled features
+
+6. Limitations and next steps
+
+---
+
+# About me (Ion Alberdi)
+
+## Until now
+* 2010: [PhD](https://www.researchgate.net/profile/Ion_Alberdi)
+* 2016: Intel OTC, Android Continuous Integration
+* 2017: Criteo, devtools
+
+## Some links
+* [github](https://github.com/yetanotherion)
+* [linkedin](https://github.com/yetanotherion)
+* [cv](https://github.com/yetanotherion)
+
+---
+
+# About Criteo
+
+Lea
+Biggest hadoop-cluster
+
+
+---
+
+# Jenkins @ Criteo
+
+* 2.5 K jobs
+
+* 30K executions / day
+
+* All jobs written using the [Job DSL Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin)
+
+* presubmit / postsubmit / (part of) release jobs of
+
+ * applications (csharp, java, scala, python)
+
+ * infrastructure code (chef, ruby)
+
+ * jobs code (jobdsl, groovy)
+
+
+---
+
+# Continuous Delivery of jobs
+
+How to add a java project:
+```groovy
+
+import criteo.tools.build.jenkins.dsl.ContinuousIntegration
+
+
+ContinuousIntegration.jmoabProject {
+
+    gerritProject(<projectName>)
+}
+```
+
+---
+
+# Continuous Delivery of jobs
+How to add a java project:
+```groovy
+// Internal extension to the job dsl (thanks: Benoit Perrot)
+import criteo.tools.build.jenkins.dsl.ContinuousIntegration
+
+// Java project (moab, mother of all builds, trunk based development)
+ContinuousIntegration.jmoabProject {
+    // you got it right, git/gerrit is used as SCM / Code Review
+    gerritProject(<projectName>)
+}
+```
+
+---
+
+# Continuous Delivery of jobs
+```terminal
+ion@criteo$ git add ...
+ion@criteo$ git commit -m "Add <projectName> in Jmoab"
+ion@criteo$ git push
+```
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
