@@ -60,8 +60,6 @@ Biggest hadoop-cluster
 
  * JMOAB (java, scala, python)
 
- * internal tools manage inter git-project dependencies
-
 ---
 
 # Continuous Delivery of jobs
@@ -104,7 +102,7 @@ Job descriptions files stored in a git project, plugged to
 * postsubmit: triggers the update of all jobs from the head of the project.
 
 
-2.5 K jobs ? developers, i.e. most (if not all) teams, at criteo:
+2.5 K jobs ? developers, i.e. most (if not all) teams, at Criteo R&D:
 
 * add/update definition of builds (code review by devtools),
 
@@ -114,17 +112,17 @@ Job descriptions files stored in a git project, plugged to
 # Continuous Delivery of jobs
 How are jobs updated ?
 
-We need a **job** to create / update *jobs* based on what is in the head of that project.
+We need a **job** to create (update) *jobs* based on what is in the head of that project.
 
 Unlike [Jenkins + Groovy with the Job DSL plugin](https://www.youtube.com/watch?v=SSK_JaBacE0)
-, this **job** is:
-* written, using the job DSL plugin,
+, this **job**:
+* is written, using the job DSL plugin,
 
 * goes through the same process as other *jobs*,
 
-* peaks around 45 updates per day,
+* has peaks around 45 updates per day,
 
-* thanks (bis) Benoit Perrot :)
+* thanks (bis) Benoit Perrot.
 
 ---
 # Continuous Delivery of jobs
@@ -265,7 +263,7 @@ What's the **type** of the returned object ?
 ---
 # The need of a library of jobs
 
-No kidding, [wat ?](https://www.destroyallsoftware.com/talks/wat)
+[WAT?](https://www.destroyallsoftware.com/talks/wat)
 ```groovy
 private static String failedItems(report, successKey, keyToCollect) {
     return """({
@@ -300,20 +298,172 @@ Once upon a daily, what about:
 
 * send an aggregated report to the author of commits.
 
-
----
-# The need of a library of jobs
-
-Once upon a daily, what about:
-
-* using MOAB projects' dependency graph, and
-
-* the list of commits between two builds, to
-
-* identify the commits that broke something and
-
-* send an aggregated report to the author of commits.
+--
 
 Planning meeting:
 
+--
+
 * we need refactoring.
+
+---
+# Continuous Delivery of the library
+
+Requirements:
+
+* Be able to:
+ * return something else than **_String_**
+ * unit test.
+
+* Without slowing-down the job delivery rate (45 updates per day):
+ * said otherwise: jobs must be updated right after the merge.
+
+---
+# Continuous Delivery of the library
+
+Proposal:
+
+* create a new git project that produces libraries as [JAR](https://docs.oracle.com/javase/tutorial/deployment/jar/basicsindex.html)
+
+--
+
+* presubmit (test) / postsubmit (triggers the same but updated **job**)
+
+--
+
+* *jobs* that need libraries
+ * call [@Grab(group, artifact, version)](http://docs.groovy-lang.org/latest/html/documentation/grape.html) in
+ * groovyCommand / systemGroovyCommand
+ * getting the version from an environment variable
+
+--
+
+* **job** is updated to
+ * compute **_V_**, the version of the library (the number of commits in **master**)
+ * upload the jars to the internal maven repository
+ * compile all *jobs* with the environment variable set to **_V_**.
+
+---
+# Continuous Delivery of the library
+```groovy
+shell("""\
+  cd ${servicesLibsDir}
+  # the cleanAndClone above makes the HEAD point to origin/master
+  NB_COMMITS=`git rev-list --count HEAD`
+
+  VERSION="\${NB_COMMITS}"
+  echo \${VERSION} > version.txt
+  if ${Nexus.curlCmdToCheckIfPomArtifactReleased(..., '${VERSION}')}; then
+      echo "\${VERSION} was already released. Skipping upload."
+  else
+      echo "Uploading \${VERSION}."
+      ...
+      echo "servicesLibsVersion=\${VERSION}" >> gradle.properties
+      ${GradleHelper.wrapOnCygwin('./gradlew publish || exit 1')}
+      echo "Upload done."
+```
+
+---
+# Continuous Delivery of the library
+```groovy
+shell("""\
+  cd ${servicesLibsDir}
+  # the cleanAndClone above makes the HEAD point to origin/master
+  NB_COMMITS=`git rev-list --count HEAD`
+  # appending 0. not to conflict with the JMOAB // hack
+  VERSION="\${0.NB_COMMITS}"
+  echo \${VERSION} > version.txt
+  if ${Nexus.curlCmdToCheckIfPomArtifactReleased(..., '${VERSION}')}; then
+      echo "\${VERSION} was already released. Skipping upload."
+  else
+      echo "Uploading \${VERSION}."
+      ...
+      echo "servicesLibsVersion=\${VERSION}" >> gradle.properties
+      ${GradleHelper.wrapOnCygwin('./gradlew publish || exit 1')}
+      echo "Upload done."
+ ...""")
+```
+
+--
+
+```groovy
+shell("""\
+  mvn clean
+  VERSION=`cat ${servicesLibsDir}/version.txt`
+  SERVICES_LIBS_VERSION=\${VERSION} mvn compile exec:java
+  ...""")
+```
+
+---
+# Continuous Delivery of the library
+The code of the job
+```groovy
+${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.CLIENTS, true)}
+${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.MOAB, true)}
+...
+
+def moabId = System.getenv('MOAB_ID')
+def gm = new GenerateMails(filer,
+						   moabId,
+						   System.getenv('PREVIOUS_MOAB_ID'),
+						   filer.getBuildReportJson(moabId),
+						   getRepoBuildJobUrl,
+						   new DevtoolsServicesRestClient(),
+						   new Gerrit())
+def folderPath = Paths.get('${mailsDir}')
+def fileFromDev = { dev -> folderPath.resolve(\"mail_\${dev}.mail\") }
+Logging.out.println("Generating mails")
+gm.writeMailsInFs(fileFromDev)
+Logging.out.println("Mails are generated")
+...```
+
+---
+# Continuous Delivery of the library
+It's not a bluff
+
+```groovy
+package com.criteo.devtools.moab
+
+import com.criteo.devtools.clients.devtoolsservices.DevtoolsServicesRestClient
+import com.criteo.devtools.clients.gerrit.Gerrit
+...
+/**
+ * GenerateMails at the end of C# MOAB pipeline, to report failures.
+ */
+class GenerateMails extends ProcessMoabRepoBuildResults {
+ ...
+ def writeMailsInFs(Closure pathFromDev) {
+    def mails = generateMailsContent()
+    mails.each {
+        dev, content ->
+     	   Logging.out.println("Generating mail for developer: " + dev)
+     	   writeMailInFs(pathFromDev(dev), content)
+     	   Logging.out.println("Mail generated")
+    }
+  }
+}
+```
+
+---
+# Continuous Delivery of the library
+It's not a bluff (bis)
+
+```groovy
+package com.criteo.devtools.moab
+
+import com.criteo.devtools.clients.devtoolsservices.DevtoolsServicesRestClient
+import com.criteo.devtools.clients.gerrit.Gerrit
+...
+
+class GenerateMailsTest extends GroovyTestCase {
+
+    void testNominal() {
+        def buildReport = toJson(['R1': oneBuildReport(["fstAssembly"], false),
+                                  'R2': oneBuildReport(["sndAssembly"], false),
+                                  'R3': oneBuildReport(["thirdAssembly"], false)])
+        def g = makeGenerateMails(buildReport)
+        def expected = ['dev1@company': ['R1': ['broken_repos': ['R1'],
+        ....
+    }
+}
+```
