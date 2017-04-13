@@ -45,9 +45,7 @@ Biggest hadoop-cluster
 
 * 30K executions / day
 
-* all jobs written using the [Job DSL Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin)
-
-* presubmit / postsubmit / (part of) release jobs of
+* CI/ (part of) CD jobs of
 
  * applications (csharp, java, scala, python):
 
@@ -55,16 +53,26 @@ Biggest hadoop-cluster
 
  * jobs code (jobdsl, groovy)
 
-* two (linked) units of trunk based development:
- * MOAB (chsarp)
+* all jobs written using the [Job DSL Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin)
 
- * JMOAB (java, scala, python)
+
+
+<!-- * MOAB (chsarp, 131 git repositories)
+
+ * JMOAB (java, scala, python, 239 git repositories)-->
 
 ---
 
 # Continuous Delivery of jobs
 
-How to add a java project:
+Two (linked) units of trunk based development:
+
+|              | Languages           | #git projects |
+| ------------ |:-------------------:| -------------:|
+| MOAB         | csharp              |131            |
+| JMOAB        | java, scala, python |239            |
+
+How to add project in the JMOAB:
 ```groovy
 
 import criteo.tools.build.jenkins.dsl.ContinuousIntegration
@@ -78,8 +86,14 @@ ContinuousIntegration.jmoabProject {
 ---
 
 # Continuous Delivery of jobs
-How to add a java project:
+Two (linked) units of trunk based development:
 
+|              | Languages           | #git projects |
+| ------------ |:-------------------:| -------------:|
+| MOAB         | csharp              |131            |
+| JMOAB        | java, scala, python |239            |
+
+How to add project in the JMOAB:
 ```groovy
 // Internal extension to the job dsl (thanks: Benoit Perrot)
 import criteo.tools.build.jenkins.dsl.ContinuousIntegration
