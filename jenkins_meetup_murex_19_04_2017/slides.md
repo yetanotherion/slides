@@ -53,8 +53,11 @@ Biggest hadoop-cluster of europe
 
 * 2.5 K jobs
 
+--
+
 * 30K executions / day
 
+--
 * CI/ (part of) CD jobs of
 
  * applications (csharp, java, scala, python):
@@ -63,13 +66,9 @@ Biggest hadoop-cluster of europe
 
  * jobs code (jobdsl, groovy)
 
+--
 * all jobs written using the [Job DSL Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin)
 
-
-
-<!-- * MOAB (chsarp, 131 git repositories)
-
- * JMOAB (java, scala, python, 239 git repositories)-->
 
 ---
 
@@ -129,6 +128,7 @@ Job descriptions files stored in a git project, plugged to
 
 * postsubmit: triggers the update of all jobs from the head of the project.
 
+--
 
 2.5 K jobs ? developers, i.e. most (if not all) teams, at Criteo R&D:
 
@@ -141,6 +141,8 @@ Job descriptions files stored in a git project, plugged to
 How are jobs updated ?
 
 We need a **job** to create *jobs* based on what is in the head of that project.
+
+--
 
 Unlike [Jenkins + Groovy with the Job DSL plugin](https://www.youtube.com/watch?v=SSK_JaBacE0)
 , this **job**:
@@ -992,7 +994,7 @@ GitProject(A)
 ---
 # Enabled features
 
-The current state of enabled features:
+The current state of enabled features (besides the two above):
 
 --
 * send job related metrics to [Graphite](https://graphiteapp.org/) (Thanks Emmanuel Debanne)
@@ -1111,4 +1113,6 @@ The current state of the **bugs**:
 ---
 # Questions?
 
-Thanks for your attention.
+
+
+Slides made with [remark](https://github.com/gnab/remark/) (Thanks [Ole Petter Bang](https://github.com/gnab))
