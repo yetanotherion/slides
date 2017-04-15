@@ -166,12 +166,11 @@ CriteoJob.job(this, JobNames.refreshBuildConfiguration) {
            ...""")
 
      systemGroovyCommand("""...
-          import jenkins.model.Jenkins
 
           xmls.eachWithIndex { file, i ->
                 def name = file.baseName
                 ...
-                def job = Jenkins.instance.getItemByFullName(name)
+                def job = instance.getItemByFullName(name)
                 if (job) {
                     println "[${i+1}/$count] Updating job $name"
                     job.updateByXml(new StreamSource(stream)) // updates the job
