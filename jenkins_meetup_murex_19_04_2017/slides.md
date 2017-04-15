@@ -6,13 +6,23 @@
 
 1. Jenkins @ Criteo
 
+--
+
 2. Continuous Delivery of jobs
+
+--
 
 3. The need of a library for jobs
 
+--
+
 4. Continous Delivery of the library
 
+--
+
 5. Enabled features
+
+--
 
 6. Limitations and next steps
 
@@ -22,8 +32,8 @@
 
 ## Until now
 * 2010: [PhD](https://www.researchgate.net/profile/Ion_Alberdi)
-* 2016: Intel OTC, Android Continuous Integration
-* 2017: Criteo, devtools
+* |> 2016: [Intel OTC](https://01.org/), Android Continuous Integration
+* |> 2017: [Criteo](http://www.criteo.com/), devtools
 
 ## Some links
 * [github](https://github.com/yetanotherion)
@@ -34,7 +44,7 @@
 
 # About Criteo
 
-Biggest hadoop-cluster
+Biggest hadoop-cluster of europe
 
 
 ---
@@ -111,7 +121,11 @@ ContinuousIntegration.jmoabProject {
 
 Job descriptions files stored in a git project, plugged to
 
-* presubmit: test and code review needed to merge,
+* presubmit:
+
+ * peer code review
+
+ * test
 
 * postsubmit: triggers the update of all jobs from the head of the project.
 
@@ -126,7 +140,7 @@ Job descriptions files stored in a git project, plugged to
 # Continuous Delivery of jobs
 How are jobs updated ?
 
-We need a **job** to create (update) *jobs* based on what is in the head of that project.
+We need a **job** to create *jobs* based on what is in the head of that project.
 
 Unlike [Jenkins + Groovy with the Job DSL plugin](https://www.youtube.com/watch?v=SSK_JaBacE0)
 , this **job**:
@@ -136,7 +150,7 @@ Unlike [Jenkins + Groovy with the Job DSL plugin](https://www.youtube.com/watch?
 
 * has peaks around 45 updates per day,
 
-* thanks (bis) Benoit Perrot.
+* Thanks (bis) Benoit Perrot !
 
 ---
 # Continuous Delivery of jobs
@@ -176,6 +190,7 @@ Once upon a planning meeting, there was a story:
 
 * send it by mail to the owners of the git repository.
 
+--
 
 ```groovy
 with DSLTools.postBuildGroovyScript("""\
@@ -248,7 +263,7 @@ What's the **type** of the returned object ?
 ---
 # The need of a library of jobs
 
-*String* are you **kidding** ?
+*String*
 ```groovy
 /**
   * @param buildReport path to the build-report.json
@@ -273,7 +288,33 @@ What's the **type** of the returned object ?
     }
 ```
 
+---
+# The need of a library of jobs
 
+Are you **kidding** ?
+```groovy
+/**
+  * @param buildReport path to the build-report.json
+  * @param testReport path to the test-report.json
+  * @param pathToFailureReport path to the file where the errofs
+  *        from buildReport and testReport are aggregated
+  * @param pathToRecipients path to the file that contain the recipients
+  *        of the <job failed> mail.
+  * If at least one build or test failed, pathToRecipients will be populated
+  * Else the file will be left as it was.
+  */
+    static String generateArtifactsForMail(buildReport, testReport,
+                                           pathToFailureReport, pathToOwners,
+                                           pathToRecipients) {
+        return """
+             |def failedBuilds = ${computeFailedBuilds(buildReport)}
+             |def failedTests = ${computeFailedTests(testReport)}
+             |${writeFailureReport('failedBuilds', 'failedTests', pathToFailureReport)}
+             |if (!(failedBuilds.empty && failedTests.empty)) {
+             |  ${writeOwnersAsRecipients(pathToOwners, pathToRecipients)}
+             |}""".stripMargin()
+    }
+```
 ---
 # The need of a library of jobs
 
@@ -337,25 +378,35 @@ Requirements:
 
 Proposal:
 
-* create a new git project that produces libraries as [JAR](https://docs.oracle.com/javase/tutorial/deployment/jar/basicsindex.html)
+* create a new git project that produces **_libraries_** as [JAR](https://docs.oracle.com/javase/tutorial/deployment/jar/basicsindex.html)
 
 --
 
-* presubmit (test) / postsubmit (triggers the same but updated **job**)
+* presubmit
+ * test
+ * peer code review
 
 --
 
-* *jobs* that need libraries
+* postsubmit: triggers the same but updated **job**
+
+--
+
+* *jobs* that need **_libraries_**
  * call [@Grab(group, artifact, version)](http://docs.groovy-lang.org/latest/html/documentation/grape.html) in
  * groovyCommand / systemGroovyCommand
  * getting the version from an environment variable
 
---
+---
+# Continuous Delivery of the library
 
-* **job** is updated to
- * compute **_V_**, the version of the library (the number of commits in **master**)
- * upload the jars to the internal maven repository
- * compile all *jobs* with the environment variable set to **_V_**.
+**job** is updated to
+
+* compute **_V_**, the version of the library (the number of commits in **master**)
+
+* upload the [JAR](https://docs.oracle.com/javase/tutorial/deployment/jar/basicsindex.html)-s to the internal maven repository
+
+* compile all *jobs* with the environment variable set to **_V_**.
 
 ---
 # Continuous Delivery of the library
@@ -433,7 +484,7 @@ Logging.out.println("Mails are generated")
 
 ---
 # Continuous Delivery of the library
-It's not a bluff
+Some code of the library
 
 ```groovy
 package com.criteo.devtools.moab
@@ -460,7 +511,7 @@ class GenerateMails extends ProcessMoabRepoBuildResults {
 
 ---
 # Continuous Delivery of the library
-It's not a bluff (bis)
+Some test in the library
 
 ```groovy
 package com.criteo.devtools.moab
@@ -481,3 +532,583 @@ class GenerateMailsTest extends GroovyTestCase {
     }
 }
 ```
+
+---
+# Enabled features (Broken Moab mail)
+
+![moab_broken_mail](http://localhost:8000/imgs/commit_mails.png) <!-- .element width="50%" -->
+
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Once upon a story:
+* one jenkins job to build/test a GitProject
+* a dependency graph between projects
+* schedule jobs to build all projects.
+
+--
+
+How ?
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Once upon a story:
+* one jenkins job to build/test a GitProject
+* a dependency graph between projects
+* schedule jobs to build all projects.
+
+The sequential way
+```groovy
+GitProject(A) *
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Once upon a story:
+* one jenkins job to build/test a GitProject
+* a dependency graph between projects
+* schedule jobs to build all projects.
+
+The sequential way
+```groovy
+GitProject(A)
+├── GitProject(B) *
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Once upon a story:
+* one jenkins job to build/test a GitProject
+* a dependency graph between projects
+* schedule jobs to build all projects.
+
+The sequential way
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C) *
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Once upon a story:
+* one jenkins job to build/test a GitProject
+* a dependency graph between projects
+* schedule jobs to build all projects.
+
+The sequential way
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E) *
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Once upon a story:
+* one jenkins job to build/test a GitProject
+* a dependency graph between projects
+* schedule jobs to build all projects.
+
+The sequential way
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D) *
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Once upon a story:
+* one jenkins job to build/test a GitProject
+* a dependency graph between projects
+* schedule jobs to build all projects.
+
+The sequential way
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I) *
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Once upon a story:
+* one jenkins job to build/test a GitProject
+* a dependency graph between projects
+* schedule jobs to build all projects.
+
+The sequential way
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I)
+    └── GitProject(J) *
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Once upon a story:
+* one jenkins job to build/test a GitProject
+* a dependency graph between projects
+* schedule jobs to build all projects.
+
+The sequential way
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G) *
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Once upon a story:
+* one jenkins job to build/test a GitProject
+* a dependency graph between projects
+* schedule jobs to build all projects.
+
+The sequential way
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H) *
+└── GitProject(D)
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+Some parallelization with the [Jenkins pipeline plugin](https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin)
+```groovy
+def stages = sortProjectsByDepth(projectsByName)
+stages.eachWithIndex { stage, i ->
+     out.println("# Stage \${i}")
+     out.println(stage)
+
+     def builds = stage
+         ...
+         .collectEntries { x ->
+             [ (x.projectName) : { ignore(ABORTED) { build(x.<jobName>,
+                                                           MOAB_ID: MOAB_ID) } } ]
+         }
+
+     results.putAll(parallel(builds))
+}
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+Some parallelization with the [Jenkins pipeline plugin](https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin)
+```groovy
+GitProject(A) *
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+
+---
+# Enabled features (Make -j on jenkins jobs)
+Some parallelization with the [Jenkins pipeline plugin](https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin)
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C) *
+│   └── GitProject(H)
+└── GitProject(D) *
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Some parallelization with the [Jenkins pipeline plugin](https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin)
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D) *
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Some parallelization with the [Jenkins pipeline plugin](https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin)
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E) // we could have started E and G :S
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D) *
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Some parallelization with the library (thanks Xavier Noelle)
+```groovy
+private CompletableFuture<Void> scheduleRemainingJobs(
+        DependencyGraph dependencyGraph, Cause cause, String moabId) {
+    Collection<BuildExecutionState> newSchedules = scheduleBuildableRepositories(
+            dependencyGraph, cause, moabId)
+
+    allOfFutureCollection(newSchedules.collect { schedule ->
+        schedule.resultFuture.thenCompose(new Function<BuildExecutionResult,
+                                          CompletableFuture<Void>>() {
+            @Override
+            CompletableFuture<Void> apply(BuildExecutionResult result) {
+                builtRepositories[schedule.name] = result
+
+                Logging.out.printf("Built %d/%d repositories\n",
+                        builtRepositories.size(),
+                        dependencyGraph.repositories.size())
+
+                goingDown ? CompletableFuture.completedFuture(null)
+                        : scheduleRemainingJobs(dependencyGraph, cause, moabId)
+            }
+        })
+    })
+}```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Some parallelization with the library (thanks Xavier Noelle)
+```groovy
+GitProject(A) *
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Some parallelization with the library (thanks Xavier Noelle)
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C) *
+│   └── GitProject(H)
+└── GitProject(D) *
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Some parallelization with the library (thanks Xavier Noelle)
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E) *
+│   └── GitProject(G) *
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D) *
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Some parallelization with the library (thanks Xavier Noelle)
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G) *
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D) *
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Some parallelization with the library (thanks Xavier Noelle)
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G) *
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I) *
+    └── GitProject(J) *
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Some parallelization with the library (thanks Xavier Noelle)
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I) *
+    └── GitProject(J) *
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Some parallelization with the library (thanks Xavier Noelle)
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I)
+    └── GitProject(J) *
+```
+
+---
+# Enabled features (Make -j on jenkins jobs)
+
+Some parallelization with the library (thanks Xavier Noelle)
+```groovy
+GitProject(A)
+├── GitProject(B)
+│   ├── GitProject(E)
+│   └── GitProject(G)
+├── GitProject(C)
+│   └── GitProject(H)
+└── GitProject(D)
+    ├── GitProject(I)
+    └── GitProject(J)
+```
+
+---
+# Enabled features
+
+The current state of enabled features:
+
+--
+* send job related metrics to [Graphite](https://graphiteapp.org/) (Thanks Emmanuel Debanne)
+
+--
+
+* input / output of csharp build with distributed cache (Thanks Patrick Bruneton)
+
+--
+
+* filtering test reports based on dependency graph (Thanks Olivier Tharan)
+
+--
+
+* compute flaky test reports (Thanks Clement Boone)
+
+--
+* the delivery of the library reaches peaks around  20 updates per day
+
+--
+
+* [We are the champions](https://www.youtube.com/watch?v=04854XqcfCY)?
+
+---
+# Limitations and next steps
+
+The current state of the **bugs**:
+
+--
+
+* [GROOVY-7683](https://issues.apache.org/jira/browse/GROOVY-7683): Memory leak when using Groovy as JSR-223 scripting language
+
+--
+
+* [JENKINS-42189](https://issues.jenkins-ci.org/browse/JENKINS-42189): Groovy 2.4.8 interoperability issues
+
+--
+
+* [IVY-654](https://issues.apache.org/jira/browse/IVY-654): Share cache with locking
+
+--
+ ```groovy
+ // download transitive dependencies
+ ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.CLIENTS, true)}
+ ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.MOAB, true)}
+ ```
+
+---
+# Limitations and next steps
+
+The current state of the **bugs**:
+
+* [GROOVY-7683](https://issues.apache.org/jira/browse/GROOVY-7683): Memory leak when using Groovy as JSR-223 scripting language
+
+
+* [JENKINS-42189](https://issues.jenkins-ci.org/browse/JENKINS-42189): Groovy 2.4.8 interoperability issues
+
+
+* [IVY-654](https://issues.apache.org/jira/browse/IVY-654): Share cache with locking
+
+ * workaround
+ ```groovy
+ // do not download transitive dependencies
+ ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.CLIENTS, false)}
+ ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.MOAB, false)}
+ ```
+
+---
+# Limitations and next steps
+
+The current state of the **bugs**:
+
+* [GROOVY-7683](https://issues.apache.org/jira/browse/GROOVY-7683): Memory leak when using Groovy as JSR-223 scripting language
+
+* [JENKINS-42189](https://issues.jenkins-ci.org/browse/JENKINS-42189): Groovy 2.4.8 interoperability issues
+
+* [IVY-654](https://issues.apache.org/jira/browse/IVY-654): Share cache with locking
+
+ * workaround
+ ```groovy
+ // do not download transitive dependencies
+ ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.CLIENTS, false)}
+ ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.MOAB, false)}
+```
+
+
+* [GROOVY-8097](https://issues.apache.org/jira/browse/GROOVY-8097) Add an argument to set the resolution cache path in @Grab
+
+--
+
+* ...
+
+---
+# Limitations and next steps
+
+The current state of the **bugs**:
+
+* [GROOVY-7683](https://issues.apache.org/jira/browse/GROOVY-7683): Memory leak when using Groovy as JSR-223 scripting language
+
+* [JENKINS-42189](https://issues.jenkins-ci.org/browse/JENKINS-42189): Groovy 2.4.8 interoperability issues
+
+* [IVY-654](https://issues.apache.org/jira/browse/IVY-654): Share cache with locking
+
+ * workaround
+ ```groovy
+ // do not download transitive dependencies
+ ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.CLIENTS, false)}
+ ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.MOAB, false)}
+```
+
+
+* [GROOVY-8097](https://issues.apache.org/jira/browse/GROOVY-8097) Add an argument to set the resolution cache path in @Grab
+
+* [Don't worry be happy](https://www.youtube.com/watch?v=d-diB65scQU)?
+
+---
+# Questions?
+
+Thanks for your attention.
