@@ -150,7 +150,7 @@ Unlike [Jenkins + Groovy with the Job DSL plugin](https://www.youtube.com/watch?
 
 * goes through the same process as other *jobs*,
 
-* has peaks around 45 updates per day,
+* reaches peaks of around 45 updates per day,
 
 * Thanks (bis) Benoit Perrot !
 
@@ -372,7 +372,7 @@ Requirements:
  * unit test.
 
 * Without slowing-down the job delivery rate (45 updates per day):
- * said otherwise: jobs must be updated right after the merge.
+ * said otherwise: *jobs* must be updated right after the merge.
 
 ---
 # Continuous Delivery of the library
@@ -403,9 +403,20 @@ Proposal:
 
 **job** is updated to
 
+* compute **_V_**, the version of the library
+
+---
+# Continuous Delivery of the library
+
+**job** is updated to
+
 * compute **_V_**, the version of the library (the number of commits in **master**)
 
+--
+
 * upload the [JAR](https://docs.oracle.com/javase/tutorial/deployment/jar/basicsindex.html)-s to the internal maven repository
+
+--
 
 * compile all *jobs* with the environment variable set to **_V_**.
 
@@ -535,7 +546,7 @@ class GenerateMailsTest extends GroovyTestCase {
 ```
 
 ---
-# Enabled features (Broken Moab mail)
+# Enabled features (Moab Broken mail)
 
 ![moab_broken_mail](http://localhost:8000/imgs/commit_mails.png) <!-- .element width="50%" -->
 
@@ -793,7 +804,7 @@ GitProject(A) *
 Some parallelization with the [Jenkins pipeline plugin](https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin)
 ```groovy
 GitProject(A)
-├── GitProject(B)
+├── GitProject(B) *
 │   ├── GitProject(E)
 │   └── GitProject(G)
 ├── GitProject(C) *
@@ -825,10 +836,10 @@ Some parallelization with the [Jenkins pipeline plugin](https://wiki.jenkins-ci.
 ```groovy
 GitProject(A)
 ├── GitProject(B)
-│   ├── GitProject(E) // we could have started E and G :S
+│   ├── GitProject(E) // we could have started E and G
 │   └── GitProject(G)
 ├── GitProject(C)
-│   └── GitProject(H)
+│   └── GitProject(H) // and H too :S
 └── GitProject(D) *
     ├── GitProject(I)
     └── GitProject(J)
@@ -884,7 +895,7 @@ GitProject(A) *
 Some parallelization with the library (thanks Xavier Noelle)
 ```groovy
 GitProject(A)
-├── GitProject(B)
+├── GitProject(B) *
 │   ├── GitProject(E)
 │   └── GitProject(G)
 ├── GitProject(C) *
@@ -903,7 +914,7 @@ GitProject(A)
 ├── GitProject(B)
 │   ├── GitProject(E) *
 │   └── GitProject(G) *
-├── GitProject(C)
+├── GitProject(C) *
 │   └── GitProject(H)
 └── GitProject(D) *
     ├── GitProject(I)
@@ -920,7 +931,7 @@ GitProject(A)
 │   ├── GitProject(E)
 │   └── GitProject(G) *
 ├── GitProject(C)
-│   └── GitProject(H)
+│   └── GitProject(H) *
 └── GitProject(D) *
     ├── GitProject(I)
     └── GitProject(J)
@@ -1000,7 +1011,7 @@ The current state of enabled features (besides the two above):
 
 --
 
-* input / output of csharp build with distributed cache (Thanks Patrick Bruneton)
+* input / output of Moab build with distributed cache (Thanks Patrick Bruneton)
 
 --
 
