@@ -44,7 +44,19 @@
 
 # About Criteo
 
-Biggest hadoop-cluster of europe
+[Real-Time Digital Advertising That Works](http://www.criteo.com)
+
+* 130 countries
+
+* 11K advertisers
+
+* 16K publishers
+
+* Listed on the NASDAQ since October 2013
+
+* 90% retention rate
+
+* R&D = 21% of the workforce
 
 
 ---
