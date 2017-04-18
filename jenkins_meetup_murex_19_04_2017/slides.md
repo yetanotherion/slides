@@ -1162,6 +1162,16 @@ The current state of the **bugs**:
 
 * [Don't worry be happy](https://www.youtube.com/watch?v=d-diB65scQU)?
 
+???
+
+* First one due to a calling a groovy job at the end of each build, need to reboot jenkins
+
+* Second tried to integrate groovy 2.4.8, failed due to pipeline plugin reimplementing a garbage collector
+
+* Third explain concurrency issues (repository/resolution cache dir: not locked)
+
+* Fourth: idea to use a resolution cache dir per concurrent job. Not everyone ok with it.
+
 ---
 # Questions?
 
