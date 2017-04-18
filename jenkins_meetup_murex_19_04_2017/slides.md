@@ -462,6 +462,11 @@ and make it available in the classpath of the groovy runtime.
 ---
 # Continuous Delivery of the library
 
+![release_library_before](imgs/delivery_library_before.svg)
+
+---
+# Continuous Delivery of the library
+
 ![release_library](imgs/delivery_library.svg)
 
 ---
@@ -1064,7 +1069,7 @@ GerritProject(A)
 The current state of enabled features (besides the two above):
 
 --
-* send job related metrics to [Graphite](https://graphiteapp.org/)
+* send MOAB related metrics to [Graphite](https://graphiteapp.org/)
 
 --
 
