@@ -461,6 +461,11 @@ and make it available in the classpath of the groovy runtime.
 
 ---
 # Continuous Delivery of the library
+
+![release_library](imgs/delivery_library.svg)
+
+---
+# Continuous Delivery of the library
 ```groovy
 shell("""\
   cd ${servicesLibsDir}
