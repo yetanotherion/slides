@@ -88,12 +88,12 @@
 
 Two (linked) units of trunk based development:
 
-|              | Languages           | #git projects |
-| ------------ |:-------------------:| -------------:|
-| MOAB         | csharp              |131            |
-| JMOAB        | java, scala, python |239            |
+|              | Languages           | #Git repositories |
+| ------------ |:-------------------:| -----------------:|
+| MOAB         | csharp              |131                |
+| JMOAB        | java, scala, python |239                |
 
-How to add project in the JMOAB:
+How to add gerrit project (git repository) in the JMOAB:
 ```groovy
 
 import criteo.tools.build.jenkins.dsl.ContinuousIntegration
@@ -109,14 +109,14 @@ ContinuousIntegration.jmoabProject {
 # Continuous Delivery of jobs
 Two (linked) units of trunk based development:
 
-|              | Languages           | #git projects |
-| ------------ |:-------------------:| -------------:|
-| MOAB         | csharp              |131            |
-| JMOAB        | java, scala, python |239            |
+|              | Languages           | #Git repositories |
+| ------------ |:-------------------:| -----------------:|
+| MOAB         | csharp              |131                |
+| JMOAB        | java, scala, python |239                |
 
-How to add project in the JMOAB:
+How to add gerrit project (git repository) in the JMOAB:
 ```groovy
-// Internal extension to the job dsl (thanks: Benoit Perrot)
+// Internal extension to the job dsl
 import criteo.tools.build.jenkins.dsl.ContinuousIntegration
 
 // Java project (moab, mother of all builds, trunk based development)
@@ -130,7 +130,7 @@ ContinuousIntegration.jmoabProject {
 
 # Continuous Delivery of jobs
 
-Job descriptions files stored in a git project, plugged to
+Job descriptions files stored in a git repository, plugged to
 
 * presubmit:
 
@@ -146,13 +146,13 @@ Job descriptions files stored in a git project, plugged to
 
 * add/update definition of builds (code review by devtools),
 
-* automate generation of jobs (based on the state of git projects, ...).
+* automate generation of jobs (based on the state of git repositories, ...).
 
 ---
 # Continuous Delivery of jobs
 How are jobs updated ?
 
-We need a **job** to create *jobs* based on what is in the head of that project.
+We need a **job** to create *jobs* based on what is in the head of that repository.
 
 --
 
@@ -162,9 +162,8 @@ Unlike [Jenkins + Groovy with the Job DSL plugin](https://www.youtube.com/watch?
 
 * goes through the same process as other *jobs*,
 
-* reaches peaks of around 45 updates per day,
+* reaches peaks of around 45 updates per day.
 
-* Thanks (bis) Benoit Perrot !
 
 ---
 # Continuous Delivery of jobs
@@ -391,7 +390,7 @@ Requirements:
 
 Proposal:
 
-* create a new git project that produces **_libraries_** as [JAR](https://docs.oracle.com/javase/tutorial/deployment/jar/basicsindex.html)
+* create a new gerrit project that produces **_libraries_** as [JAR](https://docs.oracle.com/javase/tutorial/deployment/jar/basicsindex.html)
 
 --
 
@@ -567,7 +566,7 @@ class GenerateMailsTest extends GroovyTestCase {
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GitProject
+* one jenkins job to build/test a GerritProject
 * a dependency graph between projects
 * schedule jobs to build all projects.
 
@@ -575,204 +574,204 @@ Once upon a story:
 
 How ?
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GitProject
+* one jenkins job to build/test a GerritProject
 * a dependency graph between projects
 * schedule jobs to build all projects.
 
 The sequential way
 ```groovy
-GitProject(A) *
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A) *
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GitProject
+* one jenkins job to build/test a GerritProject
 * a dependency graph between projects
 * schedule jobs to build all projects.
 
 The sequential way
 ```groovy
-GitProject(A)
-├── GitProject(B) *
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B) *
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GitProject
+* one jenkins job to build/test a GerritProject
 * a dependency graph between projects
 * schedule jobs to build all projects.
 
 The sequential way
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C) *
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C) *
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GitProject
+* one jenkins job to build/test a GerritProject
 * a dependency graph between projects
 * schedule jobs to build all projects.
 
 The sequential way
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E) *
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E) *
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GitProject
+* one jenkins job to build/test a GerritProject
 * a dependency graph between projects
 * schedule jobs to build all projects.
 
 The sequential way
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D) *
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D) *
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GitProject
+* one jenkins job to build/test a GerritProject
 * a dependency graph between projects
 * schedule jobs to build all projects.
 
 The sequential way
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I) *
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I) *
+    └── GerritProject(J)
 ```
 
 ---
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GitProject
+* one jenkins job to build/test a GerritProject
 * a dependency graph between projects
 * schedule jobs to build all projects.
 
 The sequential way
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I)
-    └── GitProject(J) *
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I)
+    └── GerritProject(J) *
 ```
 
 ---
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GitProject
+* one jenkins job to build/test a GerritProject
 * a dependency graph between projects
 * schedule jobs to build all projects.
 
 The sequential way
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G) *
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G) *
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GitProject
+* one jenkins job to build/test a GerritProject
 * a dependency graph between projects
 * schedule jobs to build all projects.
 
 The sequential way
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H) *
-└── GitProject(D)
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H) *
+└── GerritProject(D)
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
@@ -799,15 +798,15 @@ stages.eachWithIndex { stage, i ->
 # Enabled features (Make -j on jenkins jobs)
 Some parallelization with the [Jenkins pipeline plugin](https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin)
 ```groovy
-GitProject(A) *
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A) *
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 
@@ -815,15 +814,15 @@ GitProject(A) *
 # Enabled features (Make -j on jenkins jobs)
 Some parallelization with the [Jenkins pipeline plugin](https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin)
 ```groovy
-GitProject(A)
-├── GitProject(B) *
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C) *
-│   └── GitProject(H)
-└── GitProject(D) *
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B) *
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C) *
+│   └── GerritProject(H)
+└── GerritProject(D) *
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
@@ -831,30 +830,30 @@ GitProject(A)
 
 Some parallelization with the [Jenkins pipeline plugin](https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin)
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D) *
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D) *
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 ---
 # Enabled features (Make -j on jenkins jobs)
 
 Some parallelization with the [Jenkins pipeline plugin](https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin)
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E) // we could have started E and G
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H) // and H too :S
-└── GitProject(D) *
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E) // we could have started E and G
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H) // and H too :S
+└── GerritProject(D) *
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
@@ -890,15 +889,15 @@ private CompletableFuture<Void> scheduleRemainingJobs(
 
 Some parallelization with the library (thanks Xavier Noelle)
 ```groovy
-GitProject(A) *
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A) *
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
@@ -906,15 +905,15 @@ GitProject(A) *
 
 Some parallelization with the library (thanks Xavier Noelle)
 ```groovy
-GitProject(A)
-├── GitProject(B) *
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C) *
-│   └── GitProject(H)
-└── GitProject(D) *
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B) *
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C) *
+│   └── GerritProject(H)
+└── GerritProject(D) *
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
@@ -922,15 +921,15 @@ GitProject(A)
 
 Some parallelization with the library (thanks Xavier Noelle)
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E) *
-│   └── GitProject(G) *
-├── GitProject(C) *
-│   └── GitProject(H)
-└── GitProject(D) *
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E) *
+│   └── GerritProject(G) *
+├── GerritProject(C) *
+│   └── GerritProject(H)
+└── GerritProject(D) *
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
@@ -938,15 +937,15 @@ GitProject(A)
 
 Some parallelization with the library (thanks Xavier Noelle)
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G) *
-├── GitProject(C)
-│   └── GitProject(H) *
-└── GitProject(D) *
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G) *
+├── GerritProject(C)
+│   └── GerritProject(H) *
+└── GerritProject(D) *
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
@@ -954,15 +953,15 @@ GitProject(A)
 
 Some parallelization with the library (thanks Xavier Noelle)
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G) *
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I) *
-    └── GitProject(J) *
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G) *
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I) *
+    └── GerritProject(J) *
 ```
 
 ---
@@ -970,15 +969,15 @@ GitProject(A)
 
 Some parallelization with the library (thanks Xavier Noelle)
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I) *
-    └── GitProject(J) *
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I) *
+    └── GerritProject(J) *
 ```
 
 ---
@@ -986,15 +985,15 @@ GitProject(A)
 
 Some parallelization with the library (thanks Xavier Noelle)
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I)
-    └── GitProject(J) *
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I)
+    └── GerritProject(J) *
 ```
 
 ---
@@ -1002,15 +1001,15 @@ GitProject(A)
 
 Some parallelization with the library (thanks Xavier Noelle)
 ```groovy
-GitProject(A)
-├── GitProject(B)
-│   ├── GitProject(E)
-│   └── GitProject(G)
-├── GitProject(C)
-│   └── GitProject(H)
-└── GitProject(D)
-    ├── GitProject(I)
-    └── GitProject(J)
+GerritProject(A)
+├── GerritProject(B)
+│   ├── GerritProject(E)
+│   └── GerritProject(G)
+├── GerritProject(C)
+│   └── GerritProject(H)
+└── GerritProject(D)
+    ├── GerritProject(I)
+    └── GerritProject(J)
 ```
 
 ---
@@ -1019,19 +1018,19 @@ GitProject(A)
 The current state of enabled features (besides the two above):
 
 --
-* send job related metrics to [Graphite](https://graphiteapp.org/) (Thanks Emmanuel Debanne)
+* send job related metrics to [Graphite](https://graphiteapp.org/)
 
 --
 
-* input / output of Moab build with distributed cache (Thanks Patrick Bruneton)
+* input / output of Moab build with distributed cache
 
 --
 
-* filtering test reports based on dependency graph (Thanks Olivier Tharan)
+* filtering test reports based on dependency graph
 
 --
 
-* compute flaky test reports (Thanks Clement Boone)
+* compute flaky test reports
 
 --
 * the delivery of the library reaches peaks around  20 updates per day
