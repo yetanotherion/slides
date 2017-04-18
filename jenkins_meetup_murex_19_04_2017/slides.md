@@ -40,6 +40,11 @@
 * [linkedin](https://github.com/yetanotherion)
 * [cv](https://github.com/yetanotherion)
 
+???
+
+Buildbot at Intel, Jenkins permits updating
+jobs without rebooting the server natively.
+
 ---
 
 # About Criteo
@@ -104,6 +109,10 @@ ContinuousIntegration.jmoabProject {
     gerritProject(<projectName>)
 }```
 
+???
+
+MOAB is mother of all builds, not Massive Ordnance Air Blast.
+
 ---
 
 # Continuous Delivery of jobs
@@ -140,6 +149,12 @@ Job descriptions files stored in a git repository, plugged to
 
 * postsubmit: triggers the update of all jobs from the head of the project.
 
+???
+
+* presubmit: job triggered at each new patchset (kind of PR)
+
+* postsubmit: triggered after the merge.
+
 --
 
 2.5 K jobs ? developers, i.e. most (if not all) teams, at Criteo R&D:
@@ -152,18 +167,23 @@ Job descriptions files stored in a git repository, plugged to
 # Continuous Delivery of jobs
 How are jobs updated ?
 
-We need a **job** to create *jobs* based on what is in the head of that repository.
+We need a job, let's call it, **refreshJob**, to create *jobs* based on what is in the head of that repository.
 
 --
 
 Unlike [Jenkins + Groovy with the Job DSL plugin](https://www.youtube.com/watch?v=SSK_JaBacE0)
-, this **job**:
+, this **refreshJob**:
 * is written, using the job DSL plugin,
 
 * goes through the same process as other *jobs*,
 
 * reaches peaks of around 45 updates per day.
 
+???
+
+* In the video they create the job using the jenkins UI.
+
+* No use of Process Job Dsl step.
 
 ---
 # Continuous Delivery of jobs
@@ -365,6 +385,10 @@ Once upon a daily, what about:
 
 * send an aggregated report to the author of commits.
 
+???
+
+Pause to ask whether their opinion on the result about the meeting.
+
 --
 
 Planning meeting:
@@ -400,7 +424,7 @@ Proposal:
 
 --
 
-* postsubmit: triggers the same but updated **job**
+* postsubmit: triggers the same but updated **refreshJob**
 
 --
 
@@ -409,17 +433,21 @@ Proposal:
  * groovyCommand / systemGroovyCommand
  * getting the version from an environment variable
 
+???
+Say grab is something to download a jar and its transitive dependencies
+and make it available in the classpath of the groovy runtime.
+
 ---
 # Continuous Delivery of the library
 
-**job** is updated to
+**refreshJob** is updated to
 
 * compute **_V_**, the version of the library
 
 ---
 # Continuous Delivery of the library
 
-**job** is updated to
+**refreshJob** is updated to
 
 * compute **_V_**, the version of the library (the number of commits in **master**)
 
@@ -585,6 +613,9 @@ GerritProject(A)
     └── GerritProject(J)
 ```
 
+???
+
+Pause to ask their opinion
 ---
 # Enabled features (Make -j on jenkins jobs)
 
@@ -859,7 +890,7 @@ GerritProject(A)
 ---
 # Enabled features (Make -j on jenkins jobs)
 
-Some parallelization with the library (thanks Xavier Noelle)
+Some parallelization with the library
 ```groovy
 private CompletableFuture<Void> scheduleRemainingJobs(
         DependencyGraph dependencyGraph, Cause cause, String moabId) {
@@ -887,7 +918,7 @@ private CompletableFuture<Void> scheduleRemainingJobs(
 ---
 # Enabled features (Make -j on jenkins jobs)
 
-Some parallelization with the library (thanks Xavier Noelle)
+Some parallelization with the library
 ```groovy
 GerritProject(A) *
 ├── GerritProject(B)
@@ -903,7 +934,7 @@ GerritProject(A) *
 ---
 # Enabled features (Make -j on jenkins jobs)
 
-Some parallelization with the library (thanks Xavier Noelle)
+Some parallelization with the library
 ```groovy
 GerritProject(A)
 ├── GerritProject(B) *
@@ -919,7 +950,7 @@ GerritProject(A)
 ---
 # Enabled features (Make -j on jenkins jobs)
 
-Some parallelization with the library (thanks Xavier Noelle)
+Some parallelization with the library
 ```groovy
 GerritProject(A)
 ├── GerritProject(B)
@@ -935,7 +966,7 @@ GerritProject(A)
 ---
 # Enabled features (Make -j on jenkins jobs)
 
-Some parallelization with the library (thanks Xavier Noelle)
+Some parallelization with the library
 ```groovy
 GerritProject(A)
 ├── GerritProject(B)
@@ -951,7 +982,7 @@ GerritProject(A)
 ---
 # Enabled features (Make -j on jenkins jobs)
 
-Some parallelization with the library (thanks Xavier Noelle)
+Some parallelization with the library
 ```groovy
 GerritProject(A)
 ├── GerritProject(B)
@@ -967,7 +998,7 @@ GerritProject(A)
 ---
 # Enabled features (Make -j on jenkins jobs)
 
-Some parallelization with the library (thanks Xavier Noelle)
+Some parallelization with the library
 ```groovy
 GerritProject(A)
 ├── GerritProject(B)
@@ -983,7 +1014,7 @@ GerritProject(A)
 ---
 # Enabled features (Make -j on jenkins jobs)
 
-Some parallelization with the library (thanks Xavier Noelle)
+Some parallelization with the library
 ```groovy
 GerritProject(A)
 ├── GerritProject(B)
@@ -999,7 +1030,7 @@ GerritProject(A)
 ---
 # Enabled features (Make -j on jenkins jobs)
 
-Some parallelization with the library (thanks Xavier Noelle)
+Some parallelization with the library
 ```groovy
 GerritProject(A)
 ├── GerritProject(B)
