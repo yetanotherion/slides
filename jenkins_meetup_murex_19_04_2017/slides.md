@@ -559,7 +559,7 @@ class GenerateMailsTest extends GroovyTestCase {
 ---
 # Enabled features (Moab Broken mail)
 
-![moab_broken_mail](http://localhost:8000/imgs/commit_mails.png) <!-- .element width="50%" -->
+![moab_broken_mail](imgs/commit_mails.png)
 
 
 ---
