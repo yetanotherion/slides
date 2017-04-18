@@ -479,6 +479,10 @@ shell("""\
       echo "Upload done."
 ```
 
+???
+
+joke about the hack
+
 ---
 # Continuous Delivery of the library
 ```groovy
@@ -499,7 +503,9 @@ shell("""\
       echo "Upload done."
  ...""")
 ```
+???
 
+joke about the hack
 --
 
 ```groovy
@@ -825,6 +831,10 @@ stages.eachWithIndex { stage, i ->
 }
 ```
 
+???
+
+parallel waits for all builds to finish before continuing
+
 ---
 # Enabled features (Make -j on jenkins jobs)
 Some parallelization with the [Jenkins pipeline plugin](https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin)
@@ -1079,13 +1089,26 @@ The current state of the **bugs**:
 
 * [GROOVY-7683](https://issues.apache.org/jira/browse/GROOVY-7683): Memory leak when using Groovy as JSR-223 scripting language
 
+???
+
+* Due to a calling a groovy job at the end of each build, need to reboot jenkins
+
 --
 
+
 * [JENKINS-42189](https://issues.jenkins-ci.org/browse/JENKINS-42189): Groovy 2.4.8 interoperability issues
+
+???
+
+* Tried to integrate groovy 2.4.8, failed due to pipeline plugin reimplementing a garbage collector
+
 
 --
 
 * [IVY-654](https://issues.apache.org/jira/browse/IVY-654): Share cache with locking
+
+???
+* Explain concurrency issues (repository/resolution cache dir: not locked)
 
 --
  ```groovy
@@ -1093,14 +1116,6 @@ The current state of the **bugs**:
  ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.CLIENTS, true)}
  ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.MOAB, true)}
  ```
-???
-
-* First one due to a calling a groovy job at the end of each build, need to reboot jenkins
-
-* Second tried to integrate groovy 2.4.8, failed due to pipeline plugin reimplementing a garbage collector
-
-* Third explain concurrency issues (repository/resolution cache dir: not locked)
-
 
 ---
 # Limitations and next steps
@@ -1143,13 +1158,13 @@ The current state of the **bugs**:
 
 * [GROOVY-8097](https://issues.apache.org/jira/browse/GROOVY-8097) Add an argument to set the resolution cache path in @Grab
 
+???
+
+* Use a resolution cache dir per concurrent job. Not everyone ok with it.
+
 --
 
 * ...
-
-???
-
-* Fourth: idea to use a resolution cache dir per concurrent job. Not everyone ok with it.
 
 ---
 # Limitations and next steps
