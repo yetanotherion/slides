@@ -618,7 +618,7 @@ class GenerateMails extends ProcessMoabRepoBuildResults {
 ---
 # Continuous Delivery of the library
 
-Some test in the library:
+A test (among the 167) in the library:
 
 ```groovy
 package com.criteo.devtools.moab
