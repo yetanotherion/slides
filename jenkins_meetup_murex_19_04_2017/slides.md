@@ -165,6 +165,16 @@ Job descriptions files stored in a git repository, plugged to
 
 ---
 # Continuous Delivery of jobs
+
+Among others, presubmit provides job's diffs:
+
+![workaround_diff](imgs/workaround_diff.png)
+
+???
+
+Diff most of the information provided after
+---
+# Continuous Delivery of jobs
 How are jobs updated ?
 
 We need a job, let's call it, **refreshJob**, to create *jobs* based on what is in the head of that repository.
@@ -214,6 +224,7 @@ CriteoJob.job(this, JobNames.refreshBuildConfiguration) {
 }```
 
 ---
+
 # The need of a library of jobs
 
 Once upon a planning meeting, there was a story:
@@ -387,7 +398,7 @@ Once upon a daily, what about:
 
 ???
 
-Pause to ask whether their opinion on the result about the meeting.
+Pause to ask their opinion on the result about the meeting.
 
 --
 
@@ -464,10 +475,18 @@ and make it available in the classpath of the groovy runtime.
 
 ![release_library_before](imgs/delivery_library_before.svg)
 
+???
+
+Before
+
 ---
 # Continuous Delivery of the library
 
 ![release_library](imgs/delivery_library.svg)
+
+???
+
+After
 
 ---
 # Continuous Delivery of the library
@@ -525,10 +544,31 @@ shell("""\
   SERVICES_LIBS_VERSION=\${VERSION} mvn compile exec:java
   ...""")
 ```
+---
+# Continuous Delivery of the library
+
+The code of the helper to grab modules from the library:
+```groovy
+private static String getServicesLibsVersion() {
+	return System.getenv('SERVICES_LIBS_VERSION') ?: '9300'
+}
+
+/**
+ * Returns a @Grab command.
+ * @param module name of the module to grab
+ * @param transitive tells if the transitive dependencies should be fetched too.
+ * ...
+ */
+static String grabModule(Module module, boolean transitive) {
+	"@Grab(group=\'${group}\', module=\'${module}\',
+           version=\'${getServicesLibsVersion()}\',
+           transitive=${transitive})"
+}```
 
 ---
 # Continuous Delivery of the library
-The code of the job
+
+The code of the job:
 ```groovy
 ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.CLIENTS, true)}
 ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.MOAB, true)}
@@ -551,7 +591,7 @@ Logging.out.println("Mails are generated")
 
 ---
 # Continuous Delivery of the library
-Some code of the library
+Some code of the library:
 
 ```groovy
 package com.criteo.devtools.moab
@@ -573,12 +613,12 @@ class GenerateMails extends ProcessMoabRepoBuildResults {
      	   Logging.out.println("Mail generated")
     }
   }
-}
-```
+}```
 
 ---
 # Continuous Delivery of the library
-Some test in the library
+
+Some test in the library:
 
 ```groovy
 package com.criteo.devtools.moab
@@ -610,8 +650,8 @@ class GenerateMailsTest extends GroovyTestCase {
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GerritProject
-* a dependency graph between projects
+* one jenkins job per GerritProject,
+* a dependency graph between projects,
 * schedule jobs to build all projects.
 
 --
@@ -636,8 +676,8 @@ Pause to ask their opinion
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GerritProject
-* a dependency graph between projects
+* one jenkins job per GerritProject,
+* a dependency graph between projects,
 * schedule jobs to build all projects.
 
 The sequential way
@@ -657,8 +697,8 @@ GerritProject(A) *
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GerritProject
-* a dependency graph between projects
+* one jenkins job per GerritProject,
+* a dependency graph between projects,
 * schedule jobs to build all projects.
 
 The sequential way
@@ -678,8 +718,8 @@ GerritProject(A)
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GerritProject
-* a dependency graph between projects
+* one jenkins job per GerritProject,
+* a dependency graph between projects,
 * schedule jobs to build all projects.
 
 The sequential way
@@ -699,8 +739,8 @@ GerritProject(A)
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GerritProject
-* a dependency graph between projects
+* one jenkins job per GerritProject,
+* a dependency graph between projects,
 * schedule jobs to build all projects.
 
 The sequential way
@@ -720,8 +760,8 @@ GerritProject(A)
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GerritProject
-* a dependency graph between projects
+* one jenkins job per GerritProject,
+* a dependency graph between projects,
 * schedule jobs to build all projects.
 
 The sequential way
@@ -741,8 +781,8 @@ GerritProject(A)
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GerritProject
-* a dependency graph between projects
+* one jenkins job per GerritProject,
+* a dependency graph between projects,
 * schedule jobs to build all projects.
 
 The sequential way
@@ -762,8 +802,8 @@ GerritProject(A)
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GerritProject
-* a dependency graph between projects
+* one jenkins job per GerritProject,
+* a dependency graph between projects,
 * schedule jobs to build all projects.
 
 The sequential way
@@ -783,8 +823,8 @@ GerritProject(A)
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GerritProject
-* a dependency graph between projects
+* one jenkins job per GerritProject,
+* a dependency graph between projects,
 * schedule jobs to build all projects.
 
 The sequential way
@@ -804,8 +844,8 @@ GerritProject(A)
 # Enabled features (Make -j on jenkins jobs)
 
 Once upon a story:
-* one jenkins job to build/test a GerritProject
-* a dependency graph between projects
+* one jenkins job per GerritProject,
+* a dependency graph between projects,
 * schedule jobs to build all projects.
 
 The sequential way
@@ -1166,7 +1206,7 @@ The current state of the **bugs**:
 ```
 
 
-* [GROOVY-8097](https://issues.apache.org/jira/browse/GROOVY-8097) Add an argument to set the resolution cache path in @Grab
+* [GROOVY-8097](https://issues.apache.org/jira/browse/GROOVY-8097): Add an argument to set the resolution cache path in @Grab
 
 ???
 
@@ -1203,5 +1243,6 @@ The current state of the **bugs**:
 # Questions?
 
 
+Thanks for your attention.
 
-Slides made with [remark](https://github.com/gnab/remark/) (Thanks [Ole Petter Bang](https://github.com/gnab))
+Slides made with [remark](https://github.com/gnab/remark/).
