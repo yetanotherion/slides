@@ -109,7 +109,8 @@ ContinuousIntegration.jmoabProject {
 
 ???
 
-MOAB is mother of all builds, not Massive Ordnance Air Blast.
+MOAB is mother of all builds, not Massive Ordnance Air Blast, nor
+Mother of All Bombs.
 
 ---
 
