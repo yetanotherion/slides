@@ -6,23 +6,13 @@
 
 1. Jenkins @ Criteo
 
---
-
 2. Continuous Delivery of jobs
-
---
 
 3. The need of a library for jobs
 
---
-
 4. Continous Delivery of the library
 
---
-
 5. Enabled features
-
---
 
 6. Limitations and next steps
 
