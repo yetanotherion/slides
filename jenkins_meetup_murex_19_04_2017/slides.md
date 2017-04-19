@@ -33,12 +33,12 @@
 ## Until now
 * 2010: [PhD](https://www.researchgate.net/profile/Ion_Alberdi)
 * |> 2016: [Intel OTC](https://01.org/), Android Continuous Integration
-* |> 2017: [Criteo](http://www.criteo.com/), devtools
+* |> 2017: [Criteo](http://www.criteo.com/), Devtools
 
 ## Some links
-* [github](https://github.com/yetanotherion)
-* [linkedin](https://github.com/yetanotherion)
-* [cv](https://github.com/yetanotherion)
+* [Github](https://github.com/yetanotherion)
+* [Linkedin](https://fr.linkedin.com/in/ion-alberdi-787b4a1)
+
 
 ???
 
