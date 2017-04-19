@@ -67,6 +67,11 @@ Among others, Criteo proud of retention rate
 
 * 30K executions / day
 
+???
+
+higher than openstack (20K > multimaster), but
+these metrics may not be good estimators of the load.
+
 --
 * CI/ (part of) CD jobs of
 
