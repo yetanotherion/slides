@@ -1145,8 +1145,7 @@ The current state of the **bugs**:
 
 --
 
-
-* Groovy 2.4.8 interoperability issues ([JENKINS-42189](https://issues.jenkins-ci.org/browse/JENKINS-42189))
+ * Groovy 2.4.8 interoperability issues ([JENKINS-42189](https://issues.jenkins-ci.org/browse/JENKINS-42189))
 
 ???
 
