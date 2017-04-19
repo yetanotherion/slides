@@ -1137,7 +1137,7 @@ The current state of the **bugs**:
 
 --
 
-* [GROOVY-7683](https://issues.apache.org/jira/browse/GROOVY-7683): Memory leak when using Groovy as JSR-223 scripting language
+* Memory leak when using Groovy as JSR-223 scripting language ([GROOVY-7683](https://issues.apache.org/jira/browse/GROOVY-7683))
 
 ???
 
@@ -1146,7 +1146,7 @@ The current state of the **bugs**:
 --
 
 
-* [JENKINS-42189](https://issues.jenkins-ci.org/browse/JENKINS-42189): Groovy 2.4.8 interoperability issues
+* Groovy 2.4.8 interoperability issues ([JENKINS-42189](https://issues.jenkins-ci.org/browse/JENKINS-42189))
 
 ???
 
@@ -1155,87 +1155,20 @@ The current state of the **bugs**:
 
 --
 
-* [IVY-654](https://issues.apache.org/jira/browse/IVY-654): Share cache with locking
+* Share cache with locking ([IVY-654](https://issues.apache.org/jira/browse/IVY-654))
 
 ???
 * Explain concurrency issues (repository/resolution cache dir: not locked)
 
 --
- ```groovy
- // download transitive dependencies
- ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.CLIENTS, true)}
- ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.MOAB, true)}
- ```
 
----
-# Limitations and next steps
-
-The current state of the **bugs**:
-
-* [GROOVY-7683](https://issues.apache.org/jira/browse/GROOVY-7683): Memory leak when using Groovy as JSR-223 scripting language
-
-
-* [JENKINS-42189](https://issues.jenkins-ci.org/browse/JENKINS-42189): Groovy 2.4.8 interoperability issues
-
-
-* [IVY-654](https://issues.apache.org/jira/browse/IVY-654): Share cache with locking
-
- * workaround
- ```groovy
- // do not download transitive dependencies
- ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.CLIENTS, false)}
- ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.MOAB, false)}
- ```
-
----
-# Limitations and next steps
-
-The current state of the **bugs**:
-
-* [GROOVY-7683](https://issues.apache.org/jira/browse/GROOVY-7683): Memory leak when using Groovy as JSR-223 scripting language
-
-* [JENKINS-42189](https://issues.jenkins-ci.org/browse/JENKINS-42189): Groovy 2.4.8 interoperability issues
-
-* [IVY-654](https://issues.apache.org/jira/browse/IVY-654): Share cache with locking
-
- * workaround
- ```groovy
- // do not download transitive dependencies
- ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.CLIENTS, false)}
- ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.MOAB, false)}
-```
-
-
-* [GROOVY-8097](https://issues.apache.org/jira/browse/GROOVY-8097): Add an argument to set the resolution cache path in @Grab
+ * Add an argument to set the resolution cache path in @Grab ([GROOVY-8097](https://issues.apache.org/jira/browse/GROOVY-8097))
 
 ???
 
 * Use a resolution cache dir per concurrent job. Not everyone ok with it.
 
 --
-
-* ...
-
----
-# Limitations and next steps
-
-The current state of the **bugs**:
-
-* [GROOVY-7683](https://issues.apache.org/jira/browse/GROOVY-7683): Memory leak when using Groovy as JSR-223 scripting language
-
-* [JENKINS-42189](https://issues.jenkins-ci.org/browse/JENKINS-42189): Groovy 2.4.8 interoperability issues
-
-* [IVY-654](https://issues.apache.org/jira/browse/IVY-654): Share cache with locking
-
- * workaround
- ```groovy
- // do not download transitive dependencies
- ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.CLIENTS, false)}
- ${ServicesLibsHelper.grabModule(ServicesLibsHelper.Module.MOAB, false)}
-```
-
-
-* [GROOVY-8097](https://issues.apache.org/jira/browse/GROOVY-8097) Add an argument to set the resolution cache path in @Grab
 
 * [Don't worry be happy](https://www.youtube.com/watch?v=d-diB65scQU)?
 
