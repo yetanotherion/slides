@@ -63,6 +63,9 @@ jobs without rebooting the server natively.
 
 * R&D = 21% of the workforce
 
+???
+
+Among others, Criteo proud of retention rate
 
 ---
 
